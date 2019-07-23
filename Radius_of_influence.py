@@ -42,7 +42,7 @@ def RadInfluence(s):
     #Kg mtches kg in G
     stars_vel = DispersionVelocity(s) * 1e3
     r = (G * BH_Mass) / (stars_vel**2)
-    return r * 3.24e-20
+    return r * 3.24e-20*3
 #Finally converted back to KPC (the conversion is * 3.24e-20)   
 for i in all_files:
     s = pynbody.load(Path + i)
@@ -66,7 +66,7 @@ for i in all_files:
     #BH_pos is a three int array so it will be the center
     sphere = pynbody.filt.Sphere(radius_influence, cen = BH_position)
     #print(sphere)
-    stars = s.stars[0:]
+    stars = s.stars[np.where(s.stars["tform"]>0)]
     in_sphere = stars[sphere]
     total_stars = len(in_sphere)
     print("Total stars: ",total_stars)
@@ -85,3 +85,13 @@ for i in all_files:
     vel_answer = np.sqrt((x)**2 + (y)**2 + (z)**2)
     #Now divide by total number of stars
     velocity = vel_answer.sum() / total_stars
+    
+
+    # Velocity of the stars with respect of the BH
+    stars_BH_X = x - BH['vel'][:,0]
+    stars_BH_Y = y - BH['vel'][:,1]
+    stars_BH_Z = z - BH['vel'][:,2]
+    stars_xyz = np.sqrt((stars_BH_X)**2 + (stars_BH_Y)**2 +(stars_BH_Z)**2)
+    stars_magnitude = stars_xyz/total_stars
+    print("Velocity of the stars around the BH", stars_magnitude)
+    

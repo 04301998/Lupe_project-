@@ -22,7 +22,8 @@ def gettime(s):
     return pynbody.analysis.cosmology.age(s)
 pos=[]
 vel=[]
-f = open("LoopSnapshots.dat","w+")
+f = open("LoopSnapshots.txt","w+")
+f.write("Position,  Velocity \n" )
 # Loading Snapshots
 for i in files:
     print(i)
@@ -40,6 +41,7 @@ for i in files:
     BHz = BHposition[:,2]
     print(BHz)
     posi_magnitude = np.sqrt((BHx)**2 + (BHy)**2 + (BHz)**2)
+    posi_magni = posi_magnitude[0]
     print("Magnitude position of the Black Hole: ",posi_magnitude)
     print("Position units: ",s['pos'].units)
 
@@ -75,19 +77,25 @@ for i in files:
     print("Stars around the Black Hole at 0.5 kpc: ",stars_BH)
     starsv = Sphere['vel']
     # VELOCITY OF THE STARS AROUND THE BLACK HOLE
-    vel_stars1 = Av_Vx - starsv[:,0]
-    vel_stars2 = Av_Vy - starsv[:,1]
-    vel_stars3 = Av_Vz - starsv[:,2]
+    x = Av_Vx - starsv[:,0]
+    y = Av_Vy - starsv[:,1]
+    z = Av_Vz - starsv[:,2]
     magnitude = np.sqrt((vel_1)**2 + (vel_2)**2 + (vel_3)**2)
     Av_vel_around_BH =  magnitude.sum()/total_stars
+    
+    # VELOCITY OF THE STARS WITH RESPECT OF THE BLACK HOLE
+    stars_x = x - BH['vel'][:,0]
+    stars_y = y - BH['vel'][:,1]
+    stars_z = z - BH['vel'][:,2]
+
+    stars_xyz = np.sqrt((stars_x)**2 + (stars_y)**2 + (stars_z)**2)
+    print("Velocity of the stars around the Black Hole with respect of the BH", stars_xyz)
     print("Velocity of the stars around the Black Hole  ",Av_vel_around_BH)
     vel.append(Av_vel_around_BH)
     pos.append(posi_magnitude)
-    data = [s,posi_magnitude, Av_vel_around_BH] 
-        
-    data= str(data)
-    data= data[1:-1]
-    f.write(data+'\n')
+    data = str(posi_magni)+"   "+str(Av_vel_around_BH)+"\n" 
+    
+    f.write(data)
     
     print(data)
 
@@ -115,7 +123,7 @@ plt.legend()
 plt.show()
 '''
     pynbody.analysis.angmom.faceon(s)
-    # create an image using  the default bands (i, v, u)
+python    # create an image using  the default bands (i, v, u)
     pynbody.plot.stars.render(s,width= '5 kpc',plot=True,ret_im=True,filename='halo11Faceon.png')
 
     # create an image using  the default bands (i, v, u)

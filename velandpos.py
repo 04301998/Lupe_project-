@@ -9,9 +9,10 @@ import readcol
 r = (G * BH_Mass) / (stars_vel**2)
 G = 6.674e-11
 '''
+
 #Now I need a code that will load the snapshots(s will stand for )
-Path = "/media/jillian//cptmarvel/cptmarvel.cosmo25cmb.4096g5HbwK1BH.004096/supersample/"
-files = readcol.readcol('/media/jillian/cptmarvel/cptmarvel.cosmo25cmb.4096g5HbwK1BH.004096/supersample/files.list')
+Path = "/media/jillian//cptmarvel/cptmarvel.cosmo25cmb.4096g5HbwK1BH.004096/supersample/highres/"
+files = readcol.readcol('/media/jillian/cptmarvel/cptmarvel.cosmo25cmb.4096g5HbwK1BH.004096/supersample/highres/files.list')
 all_files = files[:,0]
 
 #Tell where BH is Function
@@ -29,7 +30,7 @@ def DispersionVelocity(s):
     #print(y_direct)
     #print(z_direct)
     dispersion_velocity = np.sqrt( (x)**2 + (y)**2 + (z)**2)
-    print("Dispersion velocity: ",dispersion_velocity)
+    #print("Dispersion velocity: ",dispersion_velocity)
     return dispersion_velocity
 
 #Need my units to match up so the calculations go correctly
@@ -42,7 +43,10 @@ def RadInfluence(s):
     #Kg mtches kg in G
     stars_vel = DispersionVelocity(s) * 1e3
     r = (G * BH_Mass) / (stars_vel**2)
-    return r * 3.24e-20
+    return r * 3.24e-20*3
+
+pos = []
+#all_velocity = []
 #Finally converted back to KPC (the conversion is * 3.24e-20)   
 for i in all_files:
     s = pynbody.load(Path + i)
@@ -55,6 +59,8 @@ for i in all_files:
     BHy = BH_pos[:,1]
     BHz = BH_pos[:,2]
     BH_position = np.array([BHx[0], BHy[0], BHz[0]])
+    pos_magnitude = np.sqrt((BHx)**2 + (BHy)**2 + (BHz)**2)
+    pos.append(pos_magnitude)
     Mass_Msol = BH['mass']
     #print(BH_pos)
     #dispersion = DispersionVelocity(s)
@@ -62,19 +68,15 @@ for i in all_files:
     #The radius here is an array, we need the center to be an integer
     radius = RadInfluence(s)
     radius_influence = radius[0]
-    print("Radius of influence: ",radius)
+    #print(radius)
     #BH_pos is a three int array so it will be the center
     sphere = pynbody.filt.Sphere(radius_influence, cen = BH_position)
-    print("Sphere",sphere)
+    #print(sphere)
     stars = s.stars[0:]
     in_sphere = stars[sphere]
     total_stars = len(in_sphere)
-    print("Total stars: ",total_stars)
-    #This code tells us how many stars are in this section
-    num_of_stars = s.stars[0:]
-    in_sphere = num_of_stars[sphere]
-    #This is how many stars there are
-    total_stars = len(in_sphere)
+    #print("Total stars: ",total_stars)
+
     #This find their velocity
     velocity = in_sphere['vel']
     #Now we need to find the velocity of these stars in x,y,z
@@ -84,4 +86,25 @@ for i in all_files:
     #Now we can find the average of these by dividing by the total
     vel_answer = np.sqrt((x)**2 + (y)**2 + (z)**2)
     #Now divide by total number of stars
-    velocity = vel_answer.sum() / total_stars
+    velocity_around_BH = vel_answer.sum() / total_stars
+   # all_velocity.append(velocity_around_BH)
+
+    
+snapshots = np.array([1,2,10,20])
+time = snapshots * 0.194
+
+#plt.title("Velocity of the stars around the Black hole vs Time") 
+#plt.plot(time,all_velocity)
+#plt.xlabel("Time( Gyrs)" )
+#plt.ylabel("Velocity stars around BH(km/s)")
+#plt.tick_params(axis="x", labelcolor="b")
+#plt.legend()
+#plt.show()
+
+plt.title("Position of the Black hole vs Time")
+plt.plot(time,pos)
+plt.xlabel("Time(Gyrs)" )
+plt.ylabel("BH Distance from center(kpc)")
+plt.tick_params(axis="x", labelcolor="b")
+plt.legend()
+plt.show()
