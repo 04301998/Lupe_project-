@@ -4,11 +4,21 @@ import matplotlib.pyplot as plt
 import pynbody 
 import numpy as np
 import pandas as pd
+<<<<<<< HEAD
 import readcol
 Path = "/media/jillian/cptmarvel/cptmarvel.cosmo25cmb.4096g5HbwK1BH.004096/supersample/"
 files = readcol.readcol("/media/jillian/cptmarvel/cptmarvel.cosmo25cmb.4096g5HbwK1BH.004096/supersample/files.list")
 files = files[:,0]
 print(files)
+=======
+import matplotlib.pylab as plt
+import readcol 
+
+Path = "/media/jillian/cptmarvel/cptmarvel.cosmo25cmb.4096g5HbwK1BH.004096/supersample/"
+files = readcol.readcol(Path + "files.list")
+files = files[:,0]
+all_files = Path + files
+>>>>>>> cc5ee14ca26edfb8dfe9c44b5fc4cc75e0835854
 # FUNCTION TO FIND A BLACK HOLE
 def findBH(s):  
     BHfilter = pynbody.filt.LowPass('tform',0.0)
@@ -25,6 +35,7 @@ vel=[]
 f = open("LoopSnapshots.txt","w+")
 f.write("Position,  Velocity \n" )
 # Loading Snapshots
+<<<<<<< HEAD
 for i in files:
     print(i)
     s  = pynbody.load(Path + i)
@@ -32,6 +43,13 @@ for i in files:
     BH = findBH(s)
     pynbody.analysis.angmom.faceon(s)
     print(BH)
+=======
+
+for all_files in files:
+    
+    
+   
+>>>>>>> cc5ee14ca26edfb8dfe9c44b5fc4cc75e0835854
     BHposition = BH['pos'] # POSITION OF THE BLACK HOLE
     #print(BHposition)
     BHx = BHposition[:,0]
