@@ -59,14 +59,14 @@ def medians(Time,dEdt,intervals):
 
 intervals = pair(float_range(0,3,0.25))
 centers = [(tmin+tmax)/2. for tmin, tmax in intervals]
-#print (intervals )
-#print(centers)
-#print(medians(Time, dEdt, intervals))
+print (intervals )
+print(centers)
+print(medians(Time, dEdt, intervals))
 
 
-plt.plot(centers, medians(Time,dEdt,intervals), 'ko')
-plt.ylim(10e30,10e40)
-plt.show()
+#plt.plot(centers, medians(Time,dEdt,intervals), 'ko')
+#plt.ylim(10e30,10e40)
+#plt.show()
 
 '''
 # OLD CODE
